@@ -21,11 +21,17 @@
 
 @class GTLRDrive_Channel;
 @class GTLRDrive_Comment;
+@class GTLRDrive_Drive;
 @class GTLRDrive_File;
 @class GTLRDrive_Permission;
 @class GTLRDrive_Reply;
 @class GTLRDrive_Revision;
 @class GTLRDrive_TeamDrive;
+
+// Generated comments include content from the discovery document; avoid them
+// causing warnings since clang's checks are some what arbitrary.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdocumentation"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -85,7 +91,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  Gets information about the user, the user's Drive, and system capabilities.
  *
- *  @returns GTLRDriveQuery_AboutGet
+ *  @return GTLRDriveQuery_AboutGet
  */
 + (instancetype)query;
 
@@ -110,16 +116,28 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 //   +[GTLQueryDrive queryForChangesGetStartPageToken]
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  The ID of the shared drive for which the starting pageToken for listing
+ *  future changes from that shared drive will be returned.
+ */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
 
-/**
- *  The ID of the Team Drive for which the starting pageToken for listing future
- *  changes from that Team Drive will be returned.
- */
+/** Deprecated use driveId instead. */
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
@@ -127,14 +145,14 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  Gets the starting pageToken for listing future changes.
  *
- *  @returns GTLRDriveQuery_ChangesGetStartPageToken
+ *  @return GTLRDriveQuery_ChangesGetStartPageToken
  */
 + (instancetype)query;
 
 @end
 
 /**
- *  Lists the changes for a user or Team Drive.
+ *  Lists the changes for a user or shared drive.
  *
  *  Method: drive.changes.list
  *
@@ -152,6 +170,13 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 //   +[GTLQueryDrive queryForChangesListWithpageToken:]
 
 /**
+ *  The shared drive from which changes will be returned. If specified the
+ *  change IDs will be reflective of the shared drive; use the combined drive ID
+ *  and change ID as an identifier.
+ */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
  *  Whether changes should include the file resource if the file is still
  *  accessible by the user at the time of the request, even when a file was
  *  removed from the list of changes and there will be no further change entries
@@ -162,6 +187,15 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL includeCorpusRemovals;
 
 /**
+ *  Deprecated - Whether both My Drive and shared drive items should be included
+ *  in results. This parameter will only be effective until June 1, 2020.
+ *  Afterwards shared drive items will be included in the results.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL includeItemsFromAllDrives;
+
+/**
  *  Whether to include changes indicating that items have been removed from the
  *  list of changes, for example by deletion or loss of access.
  *
@@ -170,7 +204,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL includeRemoved;
 
 /**
- *  Whether Team Drive files or changes should be included in results.
+ *  Deprecated use includeItemsFromAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -209,29 +243,34 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *spaces;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
 
-/**
- *  The Team Drive from which changes will be returned. If specified the change
- *  IDs will be reflective of the Team Drive; use the combined Team Drive ID and
- *  change ID as an identifier.
- */
+/** Deprecated use driveId instead. */
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
  *  Fetches a @c GTLRDrive_ChangeList.
  *
- *  Lists the changes for a user or Team Drive.
+ *  Lists the changes for a user or shared drive.
  *
  *  @param pageToken The token for continuing a previous list request on the
  *    next page. This should be set to the value of 'nextPageToken' from the
  *    previous response or to the response from the getStartPageToken method.
  *
- *  @returns GTLRDriveQuery_ChangesList
+ *  @return GTLRDriveQuery_ChangesList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -260,6 +299,13 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 //   +[GTLQueryDrive queryForChangesWatchWithObject:pageToken:]
 
 /**
+ *  The shared drive from which changes will be returned. If specified the
+ *  change IDs will be reflective of the shared drive; use the combined drive ID
+ *  and change ID as an identifier.
+ */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
  *  Whether changes should include the file resource if the file is still
  *  accessible by the user at the time of the request, even when a file was
  *  removed from the list of changes and there will be no further change entries
@@ -270,6 +316,15 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL includeCorpusRemovals;
 
 /**
+ *  Deprecated - Whether both My Drive and shared drive items should be included
+ *  in results. This parameter will only be effective until June 1, 2020.
+ *  Afterwards shared drive items will be included in the results.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL includeItemsFromAllDrives;
+
+/**
  *  Whether to include changes indicating that items have been removed from the
  *  list of changes, for example by deletion or loss of access.
  *
@@ -278,7 +333,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL includeRemoved;
 
 /**
- *  Whether Team Drive files or changes should be included in results.
+ *  Deprecated use includeItemsFromAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -317,17 +372,22 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *spaces;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
 
-/**
- *  The Team Drive from which changes will be returned. If specified the change
- *  IDs will be reflective of the Team Drive; use the combined Team Drive ID and
- *  change ID as an identifier.
- */
+/** Deprecated use driveId instead. */
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
@@ -340,7 +400,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *    next page. This should be set to the value of 'nextPageToken' from the
  *    previous response or to the response from the getStartPageToken method.
  *
- *  @returns GTLRDriveQuery_ChangesWatch
+ *  @return GTLRDriveQuery_ChangesWatch
  */
 + (instancetype)queryWithObject:(GTLRDrive_Channel *)object
                       pageToken:(NSString *)pageToken;
@@ -373,7 +433,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  @param object The @c GTLRDrive_Channel to include in the query.
  *
- *  @returns GTLRDriveQuery_ChannelsStop
+ *  @return GTLRDriveQuery_ChannelsStop
  */
 + (instancetype)queryWithObject:(GTLRDrive_Channel *)object;
 
@@ -403,7 +463,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param object The @c GTLRDrive_Comment to include in the query.
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_CommentsCreate
+ *  @return GTLRDriveQuery_CommentsCreate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Comment *)object
                          fileId:(NSString *)fileId;
@@ -438,7 +498,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param commentId The ID of the comment.
  *
- *  @returns GTLRDriveQuery_CommentsDelete
+ *  @return GTLRDriveQuery_CommentsDelete
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                       commentId:(NSString *)commentId;
@@ -481,7 +541,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param commentId The ID of the comment.
  *
- *  @returns GTLRDriveQuery_CommentsGet
+ *  @return GTLRDriveQuery_CommentsGet
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                       commentId:(NSString *)commentId;
@@ -540,7 +600,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_CommentsList
+ *  @return GTLRDriveQuery_CommentsList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -578,11 +638,266 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param commentId The ID of the comment.
  *
- *  @returns GTLRDriveQuery_CommentsUpdate
+ *  @return GTLRDriveQuery_CommentsUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Comment *)object
                          fileId:(NSString *)fileId
                       commentId:(NSString *)commentId;
+
+@end
+
+/**
+ *  Creates a new shared drive.
+ *
+ *  Method: drive.drives.create
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ */
+@interface GTLRDriveQuery_DrivesCreate : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesCreateWithObject:requestId:]
+
+/**
+ *  An ID, such as a random UUID, which uniquely identifies this user's request
+ *  for idempotent creation of a shared drive. A repeated request by the same
+ *  user and with the same request ID will avoid creating duplicates by
+ *  attempting to create the same shared drive. If the shared drive already
+ *  exists a 409 error will be returned.
+ */
+@property(nonatomic, copy, nullable) NSString *requestId;
+
+/**
+ *  Fetches a @c GTLRDrive_Drive.
+ *
+ *  Creates a new shared drive.
+ *
+ *  @param object The @c GTLRDrive_Drive to include in the query.
+ *  @param requestId An ID, such as a random UUID, which uniquely identifies
+ *    this user's request for idempotent creation of a shared drive. A repeated
+ *    request by the same user and with the same request ID will avoid creating
+ *    duplicates by attempting to create the same shared drive. If the shared
+ *    drive already exists a 409 error will be returned.
+ *
+ *  @return GTLRDriveQuery_DrivesCreate
+ */
++ (instancetype)queryWithObject:(GTLRDrive_Drive *)object
+                      requestId:(NSString *)requestId;
+
+@end
+
+/**
+ *  Permanently deletes a shared drive for which the user is an organizer. The
+ *  shared drive cannot contain any untrashed items.
+ *
+ *  Method: drive.drives.delete
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ */
+@interface GTLRDriveQuery_DrivesDelete : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesDeleteWithdriveId:]
+
+/** The ID of the shared drive. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Upon successful completion, the callback's object and error parameters will
+ *  be nil. This query does not fetch an object.
+ *
+ *  Permanently deletes a shared drive for which the user is an organizer. The
+ *  shared drive cannot contain any untrashed items.
+ *
+ *  @param driveId The ID of the shared drive.
+ *
+ *  @return GTLRDriveQuery_DrivesDelete
+ */
++ (instancetype)queryWithDriveId:(NSString *)driveId;
+
+@end
+
+/**
+ *  Gets a shared drive's metadata by ID.
+ *
+ *  Method: drive.drives.get
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ *    @c kGTLRAuthScopeDriveReadonly
+ */
+@interface GTLRDriveQuery_DrivesGet : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesGetWithdriveId:]
+
+/** The ID of the shared drive. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if they are an administrator of the domain
+ *  to which the shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
+ *  Fetches a @c GTLRDrive_Drive.
+ *
+ *  Gets a shared drive's metadata by ID.
+ *
+ *  @param driveId The ID of the shared drive.
+ *
+ *  @return GTLRDriveQuery_DrivesGet
+ */
++ (instancetype)queryWithDriveId:(NSString *)driveId;
+
+@end
+
+/**
+ *  Hides a shared drive from the default view.
+ *
+ *  Method: drive.drives.hide
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ */
+@interface GTLRDriveQuery_DrivesHide : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesHideWithdriveId:]
+
+/** The ID of the shared drive. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Fetches a @c GTLRDrive_Drive.
+ *
+ *  Hides a shared drive from the default view.
+ *
+ *  @param driveId The ID of the shared drive.
+ *
+ *  @return GTLRDriveQuery_DrivesHide
+ */
++ (instancetype)queryWithDriveId:(NSString *)driveId;
+
+@end
+
+/**
+ *  Lists the user's shared drives.
+ *
+ *  Method: drive.drives.list
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ *    @c kGTLRAuthScopeDriveReadonly
+ */
+@interface GTLRDriveQuery_DrivesList : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesList]
+
+/**
+ *  Maximum number of shared drives to return.
+ *
+ *  @note If not set, the documented server-side default will be 10 (from the
+ *        range 1..100).
+ */
+@property(nonatomic, assign) NSInteger pageSize;
+
+/** Page token for shared drives. */
+@property(nonatomic, copy, nullable) NSString *pageToken;
+
+/** Query string for searching shared drives. */
+@property(nonatomic, copy, nullable) NSString *q;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then all shared
+ *  drives of the domain in which the requester is an administrator are
+ *  returned.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
+ *  Fetches a @c GTLRDrive_DriveList.
+ *
+ *  Lists the user's shared drives.
+ *
+ *  @return GTLRDriveQuery_DrivesList
+ *
+ *  @note Automatic pagination will be done when @c shouldFetchNextPages is
+ *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
+ *        information.
+ */
++ (instancetype)query;
+
+@end
+
+/**
+ *  Restores a shared drive to the default view.
+ *
+ *  Method: drive.drives.unhide
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ */
+@interface GTLRDriveQuery_DrivesUnhide : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesUnhideWithdriveId:]
+
+/** The ID of the shared drive. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Fetches a @c GTLRDrive_Drive.
+ *
+ *  Restores a shared drive to the default view.
+ *
+ *  @param driveId The ID of the shared drive.
+ *
+ *  @return GTLRDriveQuery_DrivesUnhide
+ */
++ (instancetype)queryWithDriveId:(NSString *)driveId;
+
+@end
+
+/**
+ *  Updates the metadate for a shared drive.
+ *
+ *  Method: drive.drives.update
+ *
+ *  Authorization scope(s):
+ *    @c kGTLRAuthScopeDrive
+ */
+@interface GTLRDriveQuery_DrivesUpdate : GTLRDriveQuery
+// Previous library name was
+//   +[GTLQueryDrive queryForDrivesUpdateWithObject:driveId:]
+
+/** The ID of the shared drive. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if they are an administrator of the domain
+ *  to which the shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
+ *  Fetches a @c GTLRDrive_Drive.
+ *
+ *  Updates the metadate for a shared drive.
+ *
+ *  @param object The @c GTLRDrive_Drive to include in the query.
+ *  @param driveId The ID of the shared drive.
+ *
+ *  @return GTLRDriveQuery_DrivesUpdate
+ */
++ (instancetype)queryWithObject:(GTLRDrive_Drive *)object
+                        driveId:(NSString *)driveId;
 
 @end
 
@@ -617,7 +932,9 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  Whether to set the 'keepForever' field in the new head revision. This is
- *  only applicable to files with binary content in Drive.
+ *  only applicable to files with binary content in Google Drive. Only 200
+ *  revisions for the file can be kept forever. If the limit is reached, try
+ *  deleting pinned revisions.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -629,7 +946,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *ocrLanguage;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -644,7 +970,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param object The @c GTLRDrive_File to include in the query.
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesCopy
+ *  @return GTLRDriveQuery_FilesCopy
  */
 + (instancetype)queryWithObject:(GTLRDrive_File *)object
                          fileId:(NSString *)fileId;
@@ -677,7 +1003,9 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  Whether to set the 'keepForever' field in the new head revision. This is
- *  only applicable to files with binary content in Drive.
+ *  only applicable to files with binary content in Google Drive. Only 200
+ *  revisions for the file can be kept forever. If the limit is reached, try
+ *  deleting pinned revisions.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -689,7 +1017,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *ocrLanguage;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -711,7 +1048,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param uploadParameters The media to include in this query. Maximum size
  *    5120GB. Accepted MIME type: * / *
  *
- *  @returns GTLRDriveQuery_FilesCreate
+ *  @return GTLRDriveQuery_FilesCreate
  */
 + (instancetype)queryWithObject:(GTLRDrive_File *)object
                uploadParameters:(nullable GTLRUploadParameters *)uploadParameters;
@@ -720,7 +1057,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  Permanently deletes a file owned by the user without moving it to the trash.
- *  If the file belongs to a Team Drive the user must be an organizer on the
+ *  If the file belongs to a shared drive the user must be an organizer on the
  *  parent. If the target is a folder, all descendants owned by the user are
  *  also deleted.
  *
@@ -739,7 +1076,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -750,13 +1096,13 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  be nil. This query does not fetch an object.
  *
  *  Permanently deletes a file owned by the user without moving it to the trash.
- *  If the file belongs to a Team Drive the user must be an organizer on the
+ *  If the file belongs to a shared drive the user must be an organizer on the
  *  parent. If the target is a folder, all descendants owned by the user are
  *  also deleted.
  *
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesDelete
+ *  @return GTLRDriveQuery_FilesDelete
  */
 + (instancetype)queryWithFileId:(NSString *)fileId;
 
@@ -780,7 +1126,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  Permanently deletes all of the user's trashed files.
  *
- *  @returns GTLRDriveQuery_FilesEmptyTrash
+ *  @return GTLRDriveQuery_FilesEmptyTrash
  */
 + (instancetype)query;
 
@@ -788,7 +1134,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  Exports a Google Doc to the requested MIME type and returns the exported
- *  content.
+ *  content. Please note that the exported content is limited to 10MB.
  *
  *  Method: drive.files.export
  *
@@ -811,12 +1157,12 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  Fetches the requested resource data as a @c GTLRDataObject.
  *
  *  Exports a Google Doc to the requested MIME type and returns the exported
- *  content.
+ *  content. Please note that the exported content is limited to 10MB.
  *
  *  @param fileId The ID of the file.
  *  @param mimeType The MIME type of the format requested for this export.
  *
- *  @returns GTLRDriveQuery_FilesExport
+ *  @return GTLRDriveQuery_FilesExport
  */
 + (instancetype)queryForMediaWithFileId:(NSString *)fileId
                                mimeType:(NSString *)mimeType;
@@ -824,7 +1170,8 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Generates a set of file IDs which can be provided in create requests.
+ *  Generates a set of file IDs which can be provided in create or copy
+ *  requests.
  *
  *  Method: drive.files.generateIds
  *
@@ -856,9 +1203,10 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 /**
  *  Fetches a @c GTLRDrive_GeneratedIds.
  *
- *  Generates a set of file IDs which can be provided in create requests.
+ *  Generates a set of file IDs which can be provided in create or copy
+ *  requests.
  *
- *  @returns GTLRDriveQuery_FilesGenerateIds
+ *  @return GTLRDriveQuery_FilesGenerateIds
  */
 + (instancetype)query;
 
@@ -894,7 +1242,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -907,7 +1264,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesGet
+ *  @return GTLRDriveQuery_FilesGet
  */
 + (instancetype)queryWithFileId:(NSString *)fileId;
 
@@ -918,7 +1275,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesGet
+ *  @return GTLRDriveQuery_FilesGet
  */
 + (instancetype)queryForMediaWithFileId:(NSString *)fileId;
 
@@ -943,11 +1300,9 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 //   +[GTLQueryDrive queryForFilesList]
 
 /**
- *  Comma-separated list of bodies of items (files/documents) to which the query
- *  applies. Supported bodies are 'user', 'domain', 'teamDrive' and
- *  'allTeamDrives'. 'allTeamDrives' must be combined with 'user'; all other
- *  values must be used in isolation. Prefer 'user' or 'teamDrive' to
- *  'allTeamDrives' for efficiency.
+ *  Bodies of items (files/documents) to which the query applies. Supported
+ *  bodies are 'user', 'domain', 'drive' and 'allDrives'. Prefer 'user' or
+ *  'drive' to 'allDrives' for efficiency.
  */
 @property(nonatomic, copy, nullable) NSString *corpora;
 
@@ -962,8 +1317,20 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  */
 @property(nonatomic, copy, nullable) NSString *corpus;
 
+/** ID of the shared drive to search. */
+@property(nonatomic, copy, nullable) NSString *driveId;
+
 /**
- *  Whether Team Drive items should be included in results.
+ *  Deprecated - Whether both My Drive and shared drive items should be included
+ *  in results. This parameter will only be effective until June 1, 2020.
+ *  Afterwards shared drive items will be included in the results.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL includeItemsFromAllDrives;
+
+/**
+ *  Deprecated use includeItemsFromAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -971,17 +1338,19 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  A comma-separated list of sort keys. Valid keys are 'createdTime', 'folder',
- *  'modifiedByMeTime', 'modifiedTime', 'name', 'quotaBytesUsed', 'recency',
- *  'sharedWithMeTime', 'starred', and 'viewedByMeTime'. Each key sorts
- *  ascending by default, but may be reversed with the 'desc' modifier. Example
- *  usage: ?orderBy=folder,modifiedTime desc,name. Please note that there is a
- *  current limitation for users with approximately one million files in which
- *  the requested sort order is ignored.
+ *  'modifiedByMeTime', 'modifiedTime', 'name', 'name_natural',
+ *  'quotaBytesUsed', 'recency', 'sharedWithMeTime', 'starred', and
+ *  'viewedByMeTime'. Each key sorts ascending by default, but may be reversed
+ *  with the 'desc' modifier. Example usage: ?orderBy=folder,modifiedTime
+ *  desc,name. Please note that there is a current limitation for users with
+ *  approximately one million files in which the requested sort order is
+ *  ignored.
  */
 @property(nonatomic, copy, nullable) NSString *orderBy;
 
 /**
- *  The maximum number of files to return per page.
+ *  The maximum number of files to return per page. Partial or empty result
+ *  pages are possible even before the end of the files list has been reached.
  *
  *  @note If not set, the documented server-side default will be 100 (from the
  *        range 1..1000).
@@ -1009,13 +1378,22 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *spaces;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
 
-/** ID of Team Drive to search. */
+/** Deprecated use driveId instead. */
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
@@ -1023,7 +1401,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  Lists or searches files.
  *
- *  @returns GTLRDriveQuery_FilesList
+ *  @return GTLRDriveQuery_FilesList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -1057,7 +1435,9 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 
 /**
  *  Whether to set the 'keepForever' field in the new head revision. This is
- *  only applicable to files with binary content in Drive.
+ *  only applicable to files with binary content in Google Drive. Only 200
+ *  revisions for the file can be kept forever. If the limit is reached, try
+ *  deleting pinned revisions.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -1072,7 +1452,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *removeParents;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -1095,7 +1484,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param uploadParameters The media to include in this query. Maximum size
  *    5120GB. Accepted MIME type: * / *
  *
- *  @returns GTLRDriveQuery_FilesUpdate
+ *  @return GTLRDriveQuery_FilesUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_File *)object
                          fileId:(NSString *)fileId
@@ -1133,7 +1522,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -1147,7 +1545,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param object The @c GTLRDrive_Channel to include in the query.
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesWatch
+ *  @return GTLRDriveQuery_FilesWatch
  */
 + (instancetype)queryWithObject:(GTLRDrive_Channel *)object
                          fileId:(NSString *)fileId;
@@ -1160,7 +1558,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param object The @c GTLRDrive_Channel to include in the query.
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_FilesWatch
+ *  @return GTLRDriveQuery_FilesWatch
  */
 + (instancetype)queryForMediaWithObject:(GTLRDrive_Channel *)object
                                  fileId:(NSString *)fileId;
@@ -1168,7 +1566,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Creates a permission for a file or Team Drive.
+ *  Creates a permission for a file or shared drive.
  *
  *  Method: drive.permissions.create
  *
@@ -1180,10 +1578,10 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 // Previous library name was
 //   +[GTLQueryDrive queryForPermissionsCreateWithObject:fileId:]
 
-/** A custom message to include in the notification email. */
+/** A plain text custom message to include in the notification email. */
 @property(nonatomic, copy, nullable) NSString *emailMessage;
 
-/** The ID of the file or Team Drive. */
+/** The ID of the file or shared drive. */
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /**
@@ -1194,7 +1592,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL sendNotificationEmail;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -1210,14 +1617,24 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL transferOwnership;
 
 /**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if the file ID parameter refers to a shared
+ *  drive and the requester is an administrator of the domain to which the
+ *  shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
  *  Fetches a @c GTLRDrive_Permission.
  *
- *  Creates a permission for a file or Team Drive.
+ *  Creates a permission for a file or shared drive.
  *
  *  @param object The @c GTLRDrive_Permission to include in the query.
- *  @param fileId The ID of the file or Team Drive.
+ *  @param fileId The ID of the file or shared drive.
  *
- *  @returns GTLRDriveQuery_PermissionsCreate
+ *  @return GTLRDriveQuery_PermissionsCreate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Permission *)object
                          fileId:(NSString *)fileId;
@@ -1237,18 +1654,37 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 // Previous library name was
 //   +[GTLQueryDrive queryForPermissionsDeleteWithfileId:permissionId:]
 
-/** The ID of the file or Team Drive. */
+/** The ID of the file or shared drive. */
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /** The ID of the permission. */
 @property(nonatomic, copy, nullable) NSString *permissionId;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if the file ID parameter refers to a shared
+ *  drive and the requester is an administrator of the domain to which the
+ *  shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
 
 /**
  *  Upon successful completion, the callback's object and error parameters will
@@ -1256,10 +1692,10 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  Deletes a permission.
  *
- *  @param fileId The ID of the file or Team Drive.
+ *  @param fileId The ID of the file or shared drive.
  *  @param permissionId The ID of the permission.
  *
- *  @returns GTLRDriveQuery_PermissionsDelete
+ *  @return GTLRDriveQuery_PermissionsDelete
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                    permissionId:(NSString *)permissionId;
@@ -1290,11 +1726,30 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *permissionId;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if the file ID parameter refers to a shared
+ *  drive and the requester is an administrator of the domain to which the
+ *  shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
 
 /**
  *  Fetches a @c GTLRDrive_Permission.
@@ -1304,7 +1759,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param permissionId The ID of the permission.
  *
- *  @returns GTLRDriveQuery_PermissionsGet
+ *  @return GTLRDriveQuery_PermissionsGet
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                    permissionId:(NSString *)permissionId;
@@ -1312,7 +1767,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Lists a file's or Team Drive's permissions.
+ *  Lists a file's or shared drive's permissions.
  *
  *  Method: drive.permissions.list
  *
@@ -1328,13 +1783,13 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 // Previous library name was
 //   +[GTLQueryDrive queryForPermissionsListWithfileId:]
 
-/** The ID of the file or Team Drive. */
+/** The ID of the file or shared drive. */
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /**
  *  The maximum number of permissions to return per page. When not set for files
- *  in a Team Drive, at most 100 results will be returned. When not set for
- *  files that are not in a Team Drive, the entire list will be returned.
+ *  in a shared drive, at most 100 results will be returned. When not set for
+ *  files that are not in a shared drive, the entire list will be returned.
  *
  *  @note The documented range is 1..100.
  */
@@ -1347,20 +1802,39 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *pageToken;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
 @property(nonatomic, assign) BOOL supportsTeamDrives;
 
 /**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if the file ID parameter refers to a shared
+ *  drive and the requester is an administrator of the domain to which the
+ *  shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
  *  Fetches a @c GTLRDrive_PermissionList.
  *
- *  Lists a file's or Team Drive's permissions.
+ *  Lists a file's or shared drive's permissions.
  *
- *  @param fileId The ID of the file or Team Drive.
+ *  @param fileId The ID of the file or shared drive.
  *
- *  @returns GTLRDriveQuery_PermissionsList
+ *  @return GTLRDriveQuery_PermissionsList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -1383,7 +1857,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 // Previous library name was
 //   +[GTLQueryDrive queryForPermissionsUpdateWithObject:fileId:permissionId:]
 
-/** The ID of the file or Team Drive. */
+/** The ID of the file or shared drive. */
 @property(nonatomic, copy, nullable) NSString *fileId;
 
 /** The ID of the permission. */
@@ -1397,7 +1871,16 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL removeExpiration;
 
 /**
- *  Whether the requesting application supports Team Drives.
+ *  Deprecated - Whether the requesting application supports both My Drives and
+ *  shared drives. This parameter will only be effective until June 1, 2020.
+ *  Afterwards all applications are assumed to support shared drives.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL supportsAllDrives;
+
+/**
+ *  Deprecated use supportsAllDrives instead.
  *
  *  @note If not set, the documented server-side default will be false.
  */
@@ -1413,15 +1896,25 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, assign) BOOL transferOwnership;
 
 /**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if the file ID parameter refers to a shared
+ *  drive and the requester is an administrator of the domain to which the
+ *  shared drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
  *  Fetches a @c GTLRDrive_Permission.
  *
  *  Updates a permission with patch semantics.
  *
  *  @param object The @c GTLRDrive_Permission to include in the query.
- *  @param fileId The ID of the file or Team Drive.
+ *  @param fileId The ID of the file or shared drive.
  *  @param permissionId The ID of the permission.
  *
- *  @returns GTLRDriveQuery_PermissionsUpdate
+ *  @return GTLRDriveQuery_PermissionsUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Permission *)object
                          fileId:(NSString *)fileId
@@ -1457,7 +1950,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param commentId The ID of the comment.
  *
- *  @returns GTLRDriveQuery_RepliesCreate
+ *  @return GTLRDriveQuery_RepliesCreate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Reply *)object
                          fileId:(NSString *)fileId
@@ -1497,7 +1990,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param commentId The ID of the comment.
  *  @param replyId The ID of the reply.
  *
- *  @returns GTLRDriveQuery_RepliesDelete
+ *  @return GTLRDriveQuery_RepliesDelete
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                       commentId:(NSString *)commentId
@@ -1545,7 +2038,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param commentId The ID of the comment.
  *  @param replyId The ID of the reply.
  *
- *  @returns GTLRDriveQuery_RepliesGet
+ *  @return GTLRDriveQuery_RepliesGet
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                       commentId:(NSString *)commentId
@@ -1603,7 +2096,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param commentId The ID of the comment.
  *
- *  @returns GTLRDriveQuery_RepliesList
+ *  @return GTLRDriveQuery_RepliesList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -1646,7 +2139,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param commentId The ID of the comment.
  *  @param replyId The ID of the reply.
  *
- *  @returns GTLRDriveQuery_RepliesUpdate
+ *  @return GTLRDriveQuery_RepliesUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Reply *)object
                          fileId:(NSString *)fileId
@@ -1656,8 +2149,10 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Permanently deletes a revision. This method is only applicable to files with
- *  binary content in Drive.
+ *  Permanently deletes a file version. You can only delete revisions for files
+ *  with binary content in Google Drive, like images or videos. Revisions for
+ *  other files, like Google Docs or Sheets, and the last remaining file version
+ *  can't be deleted.
  *
  *  Method: drive.revisions.delete
  *
@@ -1680,13 +2175,15 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  Upon successful completion, the callback's object and error parameters will
  *  be nil. This query does not fetch an object.
  *
- *  Permanently deletes a revision. This method is only applicable to files with
- *  binary content in Drive.
+ *  Permanently deletes a file version. You can only delete revisions for files
+ *  with binary content in Google Drive, like images or videos. Revisions for
+ *  other files, like Google Docs or Sheets, and the last remaining file version
+ *  can't be deleted.
  *
  *  @param fileId The ID of the file.
  *  @param revisionId The ID of the revision.
  *
- *  @returns GTLRDriveQuery_RevisionsDelete
+ *  @return GTLRDriveQuery_RevisionsDelete
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                      revisionId:(NSString *)revisionId;
@@ -1733,7 +2230,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param revisionId The ID of the revision.
  *
- *  @returns GTLRDriveQuery_RevisionsGet
+ *  @return GTLRDriveQuery_RevisionsGet
  */
 + (instancetype)queryWithFileId:(NSString *)fileId
                      revisionId:(NSString *)revisionId;
@@ -1746,7 +2243,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param revisionId The ID of the revision.
  *
- *  @returns GTLRDriveQuery_RevisionsGet
+ *  @return GTLRDriveQuery_RevisionsGet
  */
 + (instancetype)queryForMediaWithFileId:(NSString *)fileId
                              revisionId:(NSString *)revisionId;
@@ -1795,7 +2292,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *
  *  @param fileId The ID of the file.
  *
- *  @returns GTLRDriveQuery_RevisionsList
+ *  @return GTLRDriveQuery_RevisionsList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -1834,7 +2331,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  @param fileId The ID of the file.
  *  @param revisionId The ID of the revision.
  *
- *  @returns GTLRDriveQuery_RevisionsUpdate
+ *  @return GTLRDriveQuery_RevisionsUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_Revision *)object
                          fileId:(NSString *)fileId
@@ -1843,7 +2340,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Creates a new Team Drive.
+ *  Deprecated use drives.create instead.
  *
  *  Method: drive.teamdrives.create
  *
@@ -1866,7 +2363,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 /**
  *  Fetches a @c GTLRDrive_TeamDrive.
  *
- *  Creates a new Team Drive.
+ *  Deprecated use drives.create instead.
  *
  *  @param object The @c GTLRDrive_TeamDrive to include in the query.
  *  @param requestId An ID, such as a random UUID, which uniquely identifies
@@ -1875,7 +2372,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *    duplicates by attempting to create the same Team Drive. If the Team Drive
  *    already exists a 409 error will be returned.
  *
- *  @returns GTLRDriveQuery_TeamdrivesCreate
+ *  @return GTLRDriveQuery_TeamdrivesCreate
  */
 + (instancetype)queryWithObject:(GTLRDrive_TeamDrive *)object
                       requestId:(NSString *)requestId;
@@ -1883,8 +2380,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Permanently deletes a Team Drive for which the user is an organizer. The
- *  Team Drive cannot contain any untrashed items.
+ *  Deprecated use drives.delete instead.
  *
  *  Method: drive.teamdrives.delete
  *
@@ -1902,19 +2398,18 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
  *  Upon successful completion, the callback's object and error parameters will
  *  be nil. This query does not fetch an object.
  *
- *  Permanently deletes a Team Drive for which the user is an organizer. The
- *  Team Drive cannot contain any untrashed items.
+ *  Deprecated use drives.delete instead.
  *
  *  @param teamDriveId The ID of the Team Drive
  *
- *  @returns GTLRDriveQuery_TeamdrivesDelete
+ *  @return GTLRDriveQuery_TeamdrivesDelete
  */
 + (instancetype)queryWithTeamDriveId:(NSString *)teamDriveId;
 
 @end
 
 /**
- *  Gets a Team Drive's metadata by ID.
+ *  Deprecated use drives.get instead.
  *
  *  Method: drive.teamdrives.get
  *
@@ -1930,20 +2425,29 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if they are an administrator of the domain
+ *  to which the Team Drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
  *  Fetches a @c GTLRDrive_TeamDrive.
  *
- *  Gets a Team Drive's metadata by ID.
+ *  Deprecated use drives.get instead.
  *
  *  @param teamDriveId The ID of the Team Drive
  *
- *  @returns GTLRDriveQuery_TeamdrivesGet
+ *  @return GTLRDriveQuery_TeamdrivesGet
  */
 + (instancetype)queryWithTeamDriveId:(NSString *)teamDriveId;
 
 @end
 
 /**
- *  Lists the user's Team Drives.
+ *  Deprecated use drives.list instead.
  *
  *  Method: drive.teamdrives.list
  *
@@ -1966,12 +2470,24 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 /** Page token for Team Drives. */
 @property(nonatomic, copy, nullable) NSString *pageToken;
 
+/** Query string for searching Team Drives. */
+@property(nonatomic, copy, nullable) NSString *q;
+
+/**
+ *  Issue the request as a domain administrator; if set to true, then all Team
+ *  Drives of the domain in which the requester is an administrator are
+ *  returned.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
 /**
  *  Fetches a @c GTLRDrive_TeamDriveList.
  *
- *  Lists the user's Team Drives.
+ *  Deprecated use drives.list instead.
  *
- *  @returns GTLRDriveQuery_TeamdrivesList
+ *  @return GTLRDriveQuery_TeamdrivesList
  *
  *  @note Automatic pagination will be done when @c shouldFetchNextPages is
  *        enabled. See @c shouldFetchNextPages on @c GTLRService for more
@@ -1982,7 +2498,7 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 /**
- *  Updates a Team Drive's metadata
+ *  Deprecated use drives.update instead
  *
  *  Method: drive.teamdrives.update
  *
@@ -1997,14 +2513,23 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @property(nonatomic, copy, nullable) NSString *teamDriveId;
 
 /**
+ *  Issue the request as a domain administrator; if set to true, then the
+ *  requester will be granted access if they are an administrator of the domain
+ *  to which the Team Drive belongs.
+ *
+ *  @note If not set, the documented server-side default will be false.
+ */
+@property(nonatomic, assign) BOOL useDomainAdminAccess;
+
+/**
  *  Fetches a @c GTLRDrive_TeamDrive.
  *
- *  Updates a Team Drive's metadata
+ *  Deprecated use drives.update instead
  *
  *  @param object The @c GTLRDrive_TeamDrive to include in the query.
  *  @param teamDriveId The ID of the Team Drive
  *
- *  @returns GTLRDriveQuery_TeamdrivesUpdate
+ *  @return GTLRDriveQuery_TeamdrivesUpdate
  */
 + (instancetype)queryWithObject:(GTLRDrive_TeamDrive *)object
                     teamDriveId:(NSString *)teamDriveId;
@@ -2012,3 +2537,5 @@ GTLR_EXTERN NSString * const kGTLRDriveCorpusUser;
 @end
 
 NS_ASSUME_NONNULL_END
+
+#pragma clang diagnostic pop

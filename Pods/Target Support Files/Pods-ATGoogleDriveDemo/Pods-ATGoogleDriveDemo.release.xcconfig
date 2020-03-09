@@ -1,9 +1,10 @@
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/GTMOAuth2" "${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleAPIClientForREST" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleToolboxForMac" "${PODS_ROOT}/GoogleSignIn/Frameworks"
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 $(inherited) GTM_OAUTH2_USE_FRAMEWORK_IMPORTS=1 $(inherited) GTLR_USE_FRAMEWORK_IMPORTS=1
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AppAuth" "${PODS_CONFIGURATION_BUILD_DIR}/GTMAppAuth" "${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleAPIClientForREST" "${PODS_ROOT}/GoogleSignIn/Frameworks"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AppAuth/AppAuth.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/GTMAppAuth/GTMAppAuth.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/GTMOAuth2/GTMOAuth2.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -ObjC -framework "CoreText" -framework "GTMOAuth2" -framework "GTMSessionFetcher" -framework "GoogleAPIClientForREST" -framework "GoogleSignIn" -framework "GoogleToolboxForMac" -framework "SafariServices" -framework "Security"
+OTHER_LDFLAGS = $(inherited) -ObjC -framework "AppAuth" -framework "CoreGraphics" -framework "CoreText" -framework "Foundation" -framework "GTMAppAuth" -framework "GTMSessionFetcher" -framework "GoogleAPIClientForREST" -framework "GoogleSignIn" -framework "LocalAuthentication" -framework "SafariServices" -framework "Security" -framework "SystemConfiguration" -framework "UIKit" -weak_framework "AuthenticationServices"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
 PODS_ROOT = ${SRCROOT}/Pods
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES
