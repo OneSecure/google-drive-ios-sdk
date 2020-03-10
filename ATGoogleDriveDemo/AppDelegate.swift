@@ -14,20 +14,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         printDocumentsDirectory()
         GIDSignIn.sharedInstance().clientID = "CLIENT_ID"
         return true
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+        return GIDSignIn.sharedInstance().handle(url)
     }
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        let sourceApplication = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
-        let annotation = options[UIApplicationOpenURLOptionsKey.annotation]
-        return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance().handle(url)
     }
     
     private func printDocumentsDirectory() {

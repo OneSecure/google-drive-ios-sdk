@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -126,6 +126,7 @@
 				TargetAttributes = {
 					77E4FD00207C07AA00C59234 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1110;
 					};
 				};
 			};
@@ -368,7 +369,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V7FR7N29C2;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ATGoogleDriveDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -376,7 +377,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = agostini.tech.ATGoogleDriveDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -387,7 +388,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V7FR7N29C2;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ATGoogleDriveDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -395,7 +396,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = agostini.tech.ATGoogleDriveDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
