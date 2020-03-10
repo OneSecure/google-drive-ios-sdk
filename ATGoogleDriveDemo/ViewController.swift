@@ -13,6 +13,8 @@ import GoogleAPIClientForREST
 class ViewController: UIViewController {
 
     @IBOutlet weak var resultsLabel: UILabel!
+    @IBOutlet weak var signInBtn: UIButton!
+    @IBOutlet weak var signOutBtn: UIButton!
     
     fileprivate let driveService = GTLRDriveService()
     private var googleUser: GIDGoogleUser?
@@ -132,6 +134,11 @@ class ViewController: UIViewController {
             completion(folder.identifier!)
         }
     }
+    
+    func verifySignStatus(succ:Bool) -> Void {
+        self.signInBtn.isEnabled = !succ
+        self.signOutBtn.isEnabled = succ
+    }
 }
 
 // MARK: - GIDSignInDelegate
@@ -146,9 +153,11 @@ extension ViewController: GIDSignInDelegate {
             print("Sign in success")
             googleUser = user;
         }
+        verifySignStatus(succ: googleUser != nil)
     }
     
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
         googleUser = nil
+        verifySignStatus(succ: googleUser != nil)
     }
 }

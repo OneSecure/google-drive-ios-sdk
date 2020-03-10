@@ -76,6 +76,8 @@
                     </view>
                     <connections>
                         <outlet property="resultsLabel" destination="hfD-bi-J4A" id="Qhv-2B-NKz"/>
+                        <outlet property="signInBtn" destination="kD4-rv-OQC" id="f2J-Cw-ga3"/>
+                        <outlet property="signOutBtn" destination="fBY-Id-bK1" id="mng-N9-NyU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
