@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3A6D39542418CC28008C06D2 /* GoogleSignIn.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */; };
+		3A7082162418DCB4003E712A /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7082142418DCB4003E712A /* GoogleSignIn.framework */; };
+		3A7082192418DCDD003E712A /* GoogleSignInDependencies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */; };
 		C15484C122FCB34100C76691 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15484C022FCB34100C76691 /* AuthenticationServices.framework */; };
 		C15484C222FCB34A00C76691 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D3B1D91B72A28500D2EAA2 /* SafariServices.framework */; };
 		D936C1C921225D1000E8DAC9 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */; };
@@ -41,7 +43,8 @@
 
 /* Begin PBXFileReference section */
 		3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleSignIn.bundle; path = ../Pods/GoogleSignIn/Resources/GoogleSignIn.bundle; sourceTree = "<group>"; };
-		3A6D39552418CC3E008C06D2 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = ../Pods/GoogleSignIn/Frameworks/GoogleSignIn.framework; sourceTree = "<group>"; };
+		3A7082142418DCB4003E712A /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = "../google-signin-sdk/GoogleSignIn.framework"; sourceTree = "<group>"; };
+		3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignInDependencies.framework; path = "../google-signin-sdk/GoogleSignInDependencies.framework"; sourceTree = "<group>"; };
 		C15484C022FCB34100C76691 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		D99924CA1A92B3C7008CC226 /* SignInSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SignInSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,10 +75,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A7082192418DCDD003E712A /* GoogleSignInDependencies.framework in Frameworks */,
 				C15484C222FCB34A00C76691 /* SafariServices.framework in Frameworks */,
 				C15484C122FCB34100C76691 /* AuthenticationServices.framework in Frameworks */,
 				D936C1C921225D1000E8DAC9 /* LocalAuthentication.framework in Frameworks */,
 				D99925151A92B5A8008CC226 /* SystemConfiguration.framework in Frameworks */,
+				3A7082162418DCB4003E712A /* GoogleSignIn.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,8 @@
 		D99924C11A92B3C7008CC226 = {
 			isa = PBXGroup;
 			children = (
+				3A7082142418DCB4003E712A /* GoogleSignIn.framework */,
+				3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */,
 				3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */,
 				D99924CC1A92B3C7008CC226 /* SignInSample */,
 				D999250F1A92B555008CC226 /* Frameworks */,
@@ -117,7 +124,7 @@
 				D999250C1A92B4FC008CC226 /* Resources */,
 				D99924CD1A92B3C7008CC226 /* Supporting Files */,
 			);
-			path = SignInSample;
+			name = SignInSample;
 			sourceTree = "<group>";
 		};
 		D99924CD1A92B3C7008CC226 /* Supporting Files */ = {
@@ -144,7 +151,6 @@
 		D999250F1A92B555008CC226 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3A6D39552418CC3E008C06D2 /* GoogleSignIn.framework */,
 				C15484C022FCB34100C76691 /* AuthenticationServices.framework */,
 				D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */,
 				D9D3B1D91B72A28500D2EAA2 /* SafariServices.framework */,
@@ -350,7 +356,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../google-signin-sdk/",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/SignInSample-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.${PRODUCT_NAME:rfc1034identifier}";
@@ -363,7 +372,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../google-signin-sdk/",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/SignInSample-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.${PRODUCT_NAME:rfc1034identifier}";
