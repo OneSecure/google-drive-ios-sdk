@@ -1,3 +1,8 @@
-# ATGoogleDriveDemo
+# Links
 
-An example project on how to use GoogleDrive SDK. This project will be used on https://agostini.tech/ as a demo project for one of the articles.
+https://github.com/google/google-api-objectivec-client-for-rest/wiki
+
+https://developers.google.com/identity/sign-in/ios/
+
+An example project on how to use GoogleDrive SDK.
+
