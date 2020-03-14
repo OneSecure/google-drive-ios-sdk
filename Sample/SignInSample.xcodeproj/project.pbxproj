@@ -362,7 +362,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/SignInSample-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onesecure.SignInSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -378,7 +378,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/SignInSample-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onesecure.SignInSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

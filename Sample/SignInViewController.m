@@ -54,6 +54,9 @@ static NSString *const kSignOutAlertConfirmTitle = @"Continue";
 // Accessibility Identifiers.
 static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials";
 
+NSString * const kGTLRAuthScopeDrive                 = @"https://www.googleapis.com/auth/drive";
+NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.com/auth/drive.file";
+
 @implementation SignInViewController {
   // This is an array of arrays, each one corresponding to the cell
   // labels for its respective section.
@@ -117,7 +120,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   signIn.shouldFetchBasicProfile = YES;
   signIn.delegate = self;
   signIn.presentingViewController = self;
-  signIn.scopes = @[ @"email" ];
+  signIn.scopes = @[ kGTLRAuthScopeDriveFile, kGTLRAuthScopeDrive, ];
   [signIn restorePreviousSignIn];
 }
 
@@ -247,16 +250,17 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 // Update the interface elements containing user data to reflect the
 // currently signed in user.
 - (void)refreshUserInfo {
-  if ([GIDSignIn sharedInstance].currentUser.authentication == nil) {
+  GIDGoogleUser *currentUser = [[GIDSignIn sharedInstance] currentUser];
+  if (currentUser.authentication == nil) {
     self.userName.text = kPlaceholderUserName;
     self.userEmailAddress.text = kPlaceholderEmailAddress;
     self.userAvatar.image = [UIImage imageNamed:kPlaceholderAvatarImageName];
     return;
   }
-  self.userEmailAddress.text = [GIDSignIn sharedInstance].currentUser.profile.email;
-  self.userName.text = [GIDSignIn sharedInstance].currentUser.profile.name;
+  self.userEmailAddress.text = currentUser.profile.email;
+  self.userName.text = currentUser.profile.name;
 
-  if (![GIDSignIn sharedInstance].currentUser.profile.hasImage) {
+  if (!currentUser.profile.hasImage) {
     // There is no Profile Image to be loaded.
     return;
   }
@@ -269,7 +273,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   dispatch_async(backgroundQueue, ^{
     NSUInteger dimension = round(d);
     NSURL *imageURL =
-        [[GIDSignIn sharedInstance].currentUser.profile imageURLWithDimension:dimension];
+        [currentUser.profile imageURLWithDimension:dimension];
     NSData *avatarData = [NSData dataWithContentsOfURL:imageURL];
 
     if (avatarData) {
