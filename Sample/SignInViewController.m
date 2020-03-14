@@ -75,6 +75,9 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 
   // Map that keeps track of which cell corresponds to which DataPickerState.
   NSDictionary *_drilldownCellState;
+    
+    __weak IBOutlet UIButton *_signInBtn2;
+    GIDSignIn *_signIn;
 }
 
 #pragma mark - View lifecycle
@@ -116,12 +119,16 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
   // xib file doesn't count.
   [GIDSignInButton class];
 
-  GIDSignIn *signIn = [GIDSignIn sharedInstance];
-  signIn.shouldFetchBasicProfile = YES;
-  signIn.delegate = self;
-  signIn.presentingViewController = self;
-  signIn.scopes = @[ kGTLRAuthScopeDriveFile, kGTLRAuthScopeDrive, ];
-  [signIn restorePreviousSignIn];
+  _signIn = [GIDSignIn sharedInstance];
+  _signIn.shouldFetchBasicProfile = YES;
+  _signIn.delegate = self;
+  _signIn.presentingViewController = self;
+  _signIn.scopes = @[ kGTLRAuthScopeDriveFile, kGTLRAuthScopeDrive, ];
+  [_signIn restorePreviousSignIn];
+}
+
+- (IBAction) loginGoogle2:(id)sender {
+    [_signIn signIn];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil
@@ -236,7 +243,7 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 }
 
 - (void)reportAuthStatus {
-  GIDGoogleUser *googleUser = [[GIDSignIn sharedInstance] currentUser];
+  GIDGoogleUser *googleUser = [_signIn currentUser];
   if (googleUser.authentication) {
     _signInAuthStatus.text = @"Status: Authenticated";
   } else {
@@ -250,7 +257,7 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 // Update the interface elements containing user data to reflect the
 // currently signed in user.
 - (void)refreshUserInfo {
-  GIDGoogleUser *currentUser = [[GIDSignIn sharedInstance] currentUser];
+  GIDGoogleUser *currentUser = [_signIn currentUser];
   if (currentUser.authentication == nil) {
     self.userName.text = kPlaceholderUserName;
     self.userEmailAddress.text = kPlaceholderEmailAddress;
@@ -292,12 +299,14 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 // the current sign-in state (ie, the "Sign in" button becomes disabled
 // when a user is already signed in).
 - (void)updateButtons {
-  BOOL authenticated = ([GIDSignIn sharedInstance].currentUser.authentication != nil);
+  BOOL authenticated = (_signIn.currentUser.authentication != nil);
 
   self.signInButton.enabled = !authenticated;
   self.signOutButton.enabled = authenticated;
   self.disconnectButton.enabled = authenticated;
   self.credentialsButton.hidden = !authenticated;
+    
+    _signInBtn2.enabled = !authenticated;
 
   if (authenticated) {
     self.signInButton.alpha = 0.5;
@@ -311,13 +320,13 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 #pragma mark - IBActions
 
 - (IBAction)signOut:(id)sender {
-  [[GIDSignIn sharedInstance] signOut];
+  [_signIn signOut];
   [self reportAuthStatus];
   [self updateButtons];
 }
 
 - (IBAction)disconnect:(id)sender {
-  [[GIDSignIn sharedInstance] disconnect];
+  [_signIn disconnect];
 }
 
 - (IBAction)showAuthInspector:(id)sender {
@@ -330,7 +339,7 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
 }
 
 - (void)toggleBasicProfile:(UISwitch *)sender {
-  [GIDSignIn sharedInstance].shouldFetchBasicProfile = sender.on;
+  _signIn.shouldFetchBasicProfile = sender.on;
 }
 
 - (void)changeSignInButtonWidth:(UISlider *)sender {
@@ -439,7 +448,7 @@ NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.
       [toggle addTarget:self
                     action:@selector(toggleBasicProfile:)
           forControlEvents:UIControlEventValueChanged];
-      toggle.on = [GIDSignIn sharedInstance].shouldFetchBasicProfile;
+      toggle.on = _signIn.shouldFetchBasicProfile;
     }
 
     toggle.accessibilityLabel = [NSString stringWithFormat:@"%@ Switch", cell.accessibilityLabel];
