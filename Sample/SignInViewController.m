@@ -19,6 +19,7 @@
 #import "SignInViewController.h"
 
 #import <GoogleSignIn/GoogleSignIn.h>
+#import <GoogleDriveSDK/GoogleDriveSDK.h>
 
 #import "AuthInspectorViewController.h"
 #import "DataPickerState.h"
@@ -53,9 +54,6 @@ static NSString *const kSignOutAlertConfirmTitle = @"Continue";
 
 // Accessibility Identifiers.
 static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials";
-
-NSString * const kGTLRAuthScopeDrive                 = @"https://www.googleapis.com/auth/drive";
-NSString * const kGTLRAuthScopeDriveFile             = @"https://www.googleapis.com/auth/drive.file";
 
 @implementation SignInViewController {
   // This is an array of arrays, each one corresponding to the cell

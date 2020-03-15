@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		3A6D39542418CC28008C06D2 /* GoogleSignIn.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */; };
 		3A7082162418DCB4003E712A /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7082142418DCB4003E712A /* GoogleSignIn.framework */; };
-		3A7082192418DCDD003E712A /* GoogleSignInDependencies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */; };
+		3AF99615241E03E8003AFCF0 /* GoogleDriveSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */; };
+		3AF99616241E03E8003AFCF0 /* GoogleDriveSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C15484C122FCB34100C76691 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15484C022FCB34100C76691 /* AuthenticationServices.framework */; };
 		C15484C222FCB34A00C76691 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D3B1D91B72A28500D2EAA2 /* SafariServices.framework */; };
 		D936C1C921225D1000E8DAC9 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */; };
@@ -28,6 +29,23 @@
 		D9F31B1D1AB384FC00715FBF /* PlaceholderAvatar.png in Resources */ = {isa = PBXBuildFile; fileRef = D9F31B1B1AB384FC00715FBF /* PlaceholderAvatar.png */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3AF99610241E03AD003AFCF0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3A1EAA74241DFBFF00A7047E;
+			remoteInfo = GoogleDriveSDK;
+		};
+		3AF99613241E03D0003AFCF0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A1EAA73241DFBFF00A7047E;
+			remoteInfo = GoogleDriveSDK;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		3A6D395F2418CDCD008C06D2 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -35,6 +53,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3AF99616241E03E8003AFCF0 /* GoogleDriveSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -45,6 +64,7 @@
 		3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleSignIn.bundle; path = "../google-signin-sdk/GoogleSignIn.bundle"; sourceTree = "<group>"; };
 		3A7082142418DCB4003E712A /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = "../google-signin-sdk/GoogleSignIn.framework"; sourceTree = "<group>"; };
 		3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignInDependencies.framework; path = "../google-signin-sdk/GoogleSignInDependencies.framework"; sourceTree = "<group>"; };
+		3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GoogleDriveSDK.xcodeproj; path = ../GoogleDriveSDK.xcodeproj; sourceTree = "<group>"; };
 		C15484C022FCB34100C76691 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		D99924CA1A92B3C7008CC226 /* SignInSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SignInSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,21 +95,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A7082192418DCDD003E712A /* GoogleSignInDependencies.framework in Frameworks */,
 				C15484C222FCB34A00C76691 /* SafariServices.framework in Frameworks */,
 				C15484C122FCB34100C76691 /* AuthenticationServices.framework in Frameworks */,
 				D936C1C921225D1000E8DAC9 /* LocalAuthentication.framework in Frameworks */,
 				D99925151A92B5A8008CC226 /* SystemConfiguration.framework in Frameworks */,
 				3A7082162418DCB4003E712A /* GoogleSignIn.framework in Frameworks */,
+				3AF99615241E03E8003AFCF0 /* GoogleDriveSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3AF9960D241E03AD003AFCF0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		D99924C11A92B3C7008CC226 = {
 			isa = PBXGroup;
 			children = (
+				3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */,
 				3A7082142418DCB4003E712A /* GoogleSignIn.framework */,
 				3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */,
 				3A6D39532418CC28008C06D2 /* GoogleSignIn.bundle */,
@@ -174,6 +203,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3AF99614241E03D0003AFCF0 /* PBXTargetDependency */,
 			);
 			name = SignInSample;
 			productName = SignInSample;
@@ -205,12 +235,28 @@
 			mainGroup = D99924C11A92B3C7008CC226;
 			productRefGroup = D99924CB1A92B3C7008CC226 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3AF9960D241E03AD003AFCF0 /* Products */;
+					ProjectRef = 3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D99924C91A92B3C7008CC226 /* SignInSample */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GoogleDriveSDK.framework;
+			remoteRef = 3AF99610241E03AD003AFCF0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		D99924C81A92B3C7008CC226 /* Resources */ = {
@@ -244,6 +290,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3AF99614241E03D0003AFCF0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleDriveSDK;
+			targetProxy = 3AF99613241E03D0003AFCF0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D99924EB1A92B3C7008CC226 /* Debug */ = {
