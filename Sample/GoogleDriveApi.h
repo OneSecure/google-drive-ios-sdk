@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class UIViewController;
+@class GIDGoogleUser;
 @class GTLRDrive_File;
 
 static NSString *const kGoogleDriveFolderMimeType = @"application/vnd.google-apps.folder";
@@ -20,7 +21,9 @@ typedef void (^completionCallback)(id object, NSError *error);
 
 @interface GoogleDriveApi : NSObject
 
+@property(nonatomic, assign) BOOL shouldFetchBasicProfile;
 @property(nonatomic, assign, readonly) BOOL isAuthorized;
+@property(nonatomic, strong, readonly) GIDGoogleUser *currentUser;
 
 + (instancetype) sharedInstance;
 
@@ -31,6 +34,7 @@ typedef void (^completionCallback)(id object, NSError *error);
 - (void) signInGoogleDrive:(UIViewController *)root completion:(completionCallback)completion;
 - (BOOL) signInHandleUrl:(NSURL*)url;
 - (void) signOutGoogleDrive;
+- (void) disconnectGoogleDrive:(completionCallback)completion;
 - (NSString *) convertLocalPathToRemotePath:(NSString *)localFilePath localRoot:(NSString *)root;
 
 - (void) listFolder:(NSString *)parentID

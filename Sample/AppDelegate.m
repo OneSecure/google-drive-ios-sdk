@@ -18,7 +18,7 @@
 
 #import "AppDelegate.h"
 
-#import <GoogleSignIn/GoogleSignIn.h>
+#import "GoogleDriveApi.h"
 
 #import "SignInViewController.h"
 
@@ -33,7 +33,7 @@ static NSString * const kClientID =
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   // Set app's client ID for |GIDSignIn|.
-  [GIDSignIn sharedInstance].clientID = kClientID;
+    [[GoogleDriveApi sharedInstance] initGoogleDrive:@"sampleFolder" appKey:kClientID appSecret:nil];
 
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   SignInViewController *masterViewController =
@@ -49,7 +49,7 @@ static NSString * const kClientID =
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
-    return [[GIDSignIn sharedInstance] handleURL:url];
+    return [[GoogleDriveApi sharedInstance] signInHandleUrl:url];
 }
 
 @end

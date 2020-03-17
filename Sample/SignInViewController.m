@@ -19,7 +19,7 @@
 #import "SignInViewController.h"
 
 #import <GoogleSignIn/GoogleSignIn.h>
-#import <GoogleDriveSDK/GoogleDriveSDK.h>
+#import "GoogleDriveApi.h"
 
 #import "AuthInspectorViewController.h"
 #import "DataPickerState.h"
@@ -77,8 +77,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
     
     __weak IBOutlet UIButton *_signInBtn2;
     __weak IBOutlet UIButton *_googleDriveBtn;
-    GIDSignIn *_signIn;
-    GTLRDriveService *_googleDriveService;
+    GoogleDriveApi *_driveApi;
 }
 
 #pragma mark - View lifecycle
@@ -120,18 +119,13 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   // xib file doesn't count.
   [GIDSignInButton class];
 
-  _signIn = [GIDSignIn sharedInstance];
-  _signIn.shouldFetchBasicProfile = YES;
-  _signIn.delegate = self;
-  _signIn.presentingViewController = self;
-  _signIn.scopes = @[ kGTLRAuthScopeDriveFile, kGTLRAuthScopeDrive, ];
-  [_signIn restorePreviousSignIn];
-    
-    _googleDriveService = [[GTLRDriveService alloc] init];
+    _driveApi = [GoogleDriveApi sharedInstance];
 }
 
 - (IBAction) loginGoogle2:(id)sender {
-    [_signIn signIn];
+    [_driveApi signInGoogleDrive:self completion:^(id object, NSError *error) {
+        [self signIn:nil didSignInForUser:object withError:error];
+    }];
 }
 
 - (IBAction) googleDriveClicked:(id)sender {
@@ -162,6 +156,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   [super viewDidLoad];
 
   self.credentialsButton.accessibilityIdentifier = kCredentialsButtonAccessibilityIdentifier;
+    _signInButton.hidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -178,24 +173,28 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 - (void)signIn:(GIDSignIn *)signIn
     didSignInForUser:(GIDGoogleUser *)user
            withError:(NSError *)error {
+  dispatch_async(dispatch_get_main_queue(), ^{
   if (error) {
-    _signInAuthStatus.text = [NSString stringWithFormat:@"Status: Authentication error: %@", error];
+    self->_signInAuthStatus.text = [NSString stringWithFormat:@"Status: Authentication error: %@", error];
     return;
   }
   [self reportAuthStatus];
   [self updateButtons];
+  });
 }
 
 - (void)signIn:(GIDSignIn *)signIn
     didDisconnectWithUser:(GIDGoogleUser *)user
                 withError:(NSError *)error {
+  dispatch_async(dispatch_get_main_queue(), ^{
   if (error) {
-    _signInAuthStatus.text = [NSString stringWithFormat:@"Status: Failed to disconnect: %@", error];
+      self->_signInAuthStatus.text = [NSString stringWithFormat:@"Status: Failed to disconnect: %@", error];
   } else {
-    _signInAuthStatus.text = [NSString stringWithFormat:@"Status: Disconnected"];
+      self->_signInAuthStatus.text = [NSString stringWithFormat:@"Status: Disconnected"];
   }
   [self reportAuthStatus];
   [self updateButtons];
+  });
 }
 
 - (void)presentSignInViewController:(UIViewController *)viewController {
@@ -229,8 +228,8 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
       newStyle = kGIDSignInButtonStyleIconOnly;
       self.signInButtonWidthSlider.enabled = NO;
     }
-    if (self.signInButton.style != newStyle) {
-      self.signInButton.style = newStyle;
+    if (_signInButton.style != newStyle) {
+      _signInButton.style = newStyle;
       self.signInButtonWidthSlider.minimumValue = [self minimumButtonWidth];
     }
     self.signInButtonWidthSlider.value = _signInButton.frame.size.width;
@@ -241,33 +240,29 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 // so that we can find out its minimum allowed width (used for setting the
 // range of the width slider).
 - (CGFloat)minimumButtonWidth {
-  CGRect frame = self.signInButton.frame;
-  self.signInButton.frame = CGRectZero;
+  CGRect frame = _signInButton.frame;
+  _signInButton.frame = CGRectZero;
 
-  CGFloat minimumWidth = self.signInButton.frame.size.width;
-  self.signInButton.frame = frame;
+  CGFloat minimumWidth = _signInButton.frame.size.width;
+  _signInButton.frame = frame;
 
   return minimumWidth;
 }
 
 - (void)reportAuthStatus {
-  GIDGoogleUser *googleUser = [_signIn currentUser];
-  if (googleUser.authentication) {
+  if (_driveApi.isAuthorized) {
     _signInAuthStatus.text = @"Status: Authenticated";
   } else {
     // To authenticate, use Google+ sign-in button.
     _signInAuthStatus.text = @"Status: Not authenticated";
   }
-
-    _googleDriveService.authorizer = googleUser.authentication.fetcherAuthorizer;
-    
   [self refreshUserInfo];
 }
 
 // Update the interface elements containing user data to reflect the
 // currently signed in user.
 - (void)refreshUserInfo {
-  GIDGoogleUser *currentUser = [_signIn currentUser];
+  GIDGoogleUser *currentUser = [_driveApi currentUser];
   if (currentUser.authentication == nil) {
     self.userName.text = kPlaceholderUserName;
     self.userEmailAddress.text = kPlaceholderEmailAddress;
@@ -309,9 +304,9 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 // the current sign-in state (ie, the "Sign in" button becomes disabled
 // when a user is already signed in).
 - (void)updateButtons {
-  BOOL authenticated = (_signIn.currentUser.authentication != nil);
+  BOOL authenticated = _driveApi.isAuthorized;
 
-  self.signInButton.enabled = !authenticated;
+  _signInButton.enabled = !authenticated;
   self.signOutButton.enabled = authenticated;
   self.disconnectButton.enabled = authenticated;
   self.credentialsButton.hidden = !authenticated;
@@ -320,10 +315,10 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
     _googleDriveBtn.enabled = authenticated;
 
   if (authenticated) {
-    self.signInButton.alpha = 0.5;
+    _signInButton.alpha = 0.5;
     self.signOutButton.alpha = self.disconnectButton.alpha = 1.0;
   } else {
-    self.signInButton.alpha = 1.0;
+    _signInButton.alpha = 1.0;
     self.signOutButton.alpha = self.disconnectButton.alpha = 0.5;
   }
 }
@@ -331,13 +326,15 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 #pragma mark - IBActions
 
 - (IBAction)signOut:(id)sender {
-  [_signIn signOut];
+  [_driveApi signOutGoogleDrive];
   [self reportAuthStatus];
   [self updateButtons];
 }
 
 - (IBAction)disconnect:(id)sender {
-  [_signIn disconnect];
+    [_driveApi disconnectGoogleDrive:^(id object, NSError *error) {
+        [self signIn:nil didDisconnectWithUser:object withError:error];
+    }];
 }
 
 - (IBAction)showAuthInspector:(id)sender {
@@ -350,13 +347,13 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
 }
 
 - (void)toggleBasicProfile:(UISwitch *)sender {
-  _signIn.shouldFetchBasicProfile = sender.on;
+  _driveApi.shouldFetchBasicProfile = sender.on;
 }
 
 - (void)changeSignInButtonWidth:(UISlider *)sender {
-  CGRect frame = self.signInButton.frame;
+  CGRect frame = _signInButton.frame;
   frame.size.width = sender.value;
-  self.signInButton.frame = frame;
+  _signInButton.frame = frame;
 }
 
 #pragma mark - UIAlertView Delegate
@@ -459,7 +456,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
       [toggle addTarget:self
                     action:@selector(toggleBasicProfile:)
           forControlEvents:UIControlEventValueChanged];
-      toggle.on = _signIn.shouldFetchBasicProfile;
+      toggle.on = _driveApi.shouldFetchBasicProfile;
     }
 
     toggle.accessibilityLabel = [NSString stringWithFormat:@"%@ Switch", cell.accessibilityLabel];
@@ -469,8 +466,8 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
     UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, 150, 0)];
     slider.minimumValue = [self minimumButtonWidth];
     slider.maximumValue = 268.0;
-    slider.value = self.signInButton.frame.size.width;
-    slider.enabled = self.signInButton.style != kGIDSignInButtonStyleIconOnly;
+    slider.value = _signInButton.frame.size.width;
+    slider.enabled = _signInButton.style != kGIDSignInButtonStyleIconOnly;
 
     [slider addTarget:self
                   action:@selector(changeSignInButtonWidth:)

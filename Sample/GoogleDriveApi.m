@@ -35,13 +35,26 @@
     GIDSignIn *_signIn;
     GIDGoogleUser *_currentUser;
     completionCallback _signInCompletion;
+    completionCallback _disconnectCompletion;
 
     GTLRDriveService *_driveService;
     NSMutableArray *_filePathComponents;
 }
 
+- (BOOL) shouldFetchBasicProfile {
+    return _signIn.shouldFetchBasicProfile;
+}
+
+- (void) setShouldFetchBasicProfile:(BOOL)shouldFetchBasicProfile {
+    _signIn.shouldFetchBasicProfile = shouldFetchBasicProfile;
+}
+
 - (BOOL) isAuthorized {
     return (_currentUser != nil);
+}
+
+- (GIDGoogleUser*) currentUser {
+    return _signIn.currentUser;
 }
 
 + (instancetype) sharedInstance {
@@ -88,8 +101,12 @@
 }
 
 - (void) signOutGoogleDrive {
-    [_signIn disconnect];
     [_signIn signOut];
+}
+
+- (void) disconnectGoogleDrive:(completionCallback)completion {
+    [_signIn disconnect];
+    _disconnectCompletion = completion;
 }
 
 - (NSString *) convertLocalPathToRemotePath:(NSString *)localFilePath localRoot:(NSString *)root {
@@ -113,6 +130,11 @@
 - (void) signIn:(GIDSignIn *)signIn didDisconnectWithUser:(GIDGoogleUser *)user withError:(NSError *)error {
     _currentUser = nil;
     _driveService.authorizer = nil;
+    if (_disconnectCompletion) {
+        _disconnectCompletion(user, error);
+        _disconnectCompletion = nil;
+    }
+    [_signIn signOut];
 }
 
 #pragma mark -
