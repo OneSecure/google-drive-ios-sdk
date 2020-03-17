@@ -11,6 +11,8 @@
 		3A7082162418DCB4003E712A /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7082142418DCB4003E712A /* GoogleSignIn.framework */; };
 		3AF99615241E03E8003AFCF0 /* GoogleDriveSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */; };
 		3AF99616241E03E8003AFCF0 /* GoogleDriveSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF99611241E03AD003AFCF0 /* GoogleDriveSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3AF996CD241E28B1003AFCF0 /* GoogleDriveController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF996CC241E28B1003AFCF0 /* GoogleDriveController.m */; };
+		3AF996DE241E60E1003AFCF0 /* GoogleDriveApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF996DD241E60E1003AFCF0 /* GoogleDriveApi.m */; };
 		C15484C122FCB34100C76691 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15484C022FCB34100C76691 /* AuthenticationServices.framework */; };
 		C15484C222FCB34A00C76691 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D3B1D91B72A28500D2EAA2 /* SafariServices.framework */; };
 		D936C1C921225D1000E8DAC9 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */; };
@@ -65,6 +67,10 @@
 		3A7082142418DCB4003E712A /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = "../google-signin-sdk/GoogleSignIn.framework"; sourceTree = "<group>"; };
 		3A7082182418DCDD003E712A /* GoogleSignInDependencies.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignInDependencies.framework; path = "../google-signin-sdk/GoogleSignInDependencies.framework"; sourceTree = "<group>"; };
 		3AF9960C241E03AD003AFCF0 /* GoogleDriveSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GoogleDriveSDK.xcodeproj; path = ../GoogleDriveSDK.xcodeproj; sourceTree = "<group>"; };
+		3AF996CB241E28B1003AFCF0 /* GoogleDriveController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoogleDriveController.h; sourceTree = "<group>"; };
+		3AF996CC241E28B1003AFCF0 /* GoogleDriveController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoogleDriveController.m; sourceTree = "<group>"; };
+		3AF996DC241E60E1003AFCF0 /* GoogleDriveApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleDriveApi.h; sourceTree = "<group>"; };
+		3AF996DD241E60E1003AFCF0 /* GoogleDriveApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleDriveApi.m; sourceTree = "<group>"; };
 		C15484C022FCB34100C76691 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		D936C1C821225D1000E8DAC9 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		D99924CA1A92B3C7008CC226 /* SignInSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SignInSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +145,8 @@
 		D99924CC1A92B3C7008CC226 /* SignInSample */ = {
 			isa = PBXGroup;
 			children = (
+				3AF996DC241E60E1003AFCF0 /* GoogleDriveApi.h */,
+				3AF996DD241E60E1003AFCF0 /* GoogleDriveApi.m */,
 				D99924F31A92B478008CC226 /* AppDelegate.h */,
 				D99924F41A92B478008CC226 /* AppDelegate.m */,
 				D99924F51A92B478008CC226 /* AuthInspectorViewController.h */,
@@ -150,6 +158,8 @@
 				D99924FF1A92B4BC008CC226 /* SignInViewController.h */,
 				D99925001A92B4BC008CC226 /* SignInViewController.m */,
 				D99925011A92B4BC008CC226 /* SignInViewController.xib */,
+				3AF996CB241E28B1003AFCF0 /* GoogleDriveController.h */,
+				3AF996CC241E28B1003AFCF0 /* GoogleDriveController.m */,
 				D999250C1A92B4FC008CC226 /* Resources */,
 				D99924CD1A92B3C7008CC226 /* Supporting Files */,
 			);
@@ -280,9 +290,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AF996CD241E28B1003AFCF0 /* GoogleDriveController.m in Sources */,
 				D99925021A92B4BC008CC226 /* SignInViewController.m in Sources */,
 				D99924FE1A92B478008CC226 /* DataPickerViewController.m in Sources */,
 				D99924FD1A92B478008CC226 /* DataPickerState.m in Sources */,
+				3AF996DE241E60E1003AFCF0 /* GoogleDriveApi.m in Sources */,
 				D99924FC1A92B478008CC226 /* AuthInspectorViewController.m in Sources */,
 				D99925051A92B4D3008CC226 /* main.m in Sources */,
 				D99924FB1A92B478008CC226 /* AppDelegate.m in Sources */,

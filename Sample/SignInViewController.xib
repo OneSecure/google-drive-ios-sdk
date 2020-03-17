@@ -9,6 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignInViewController">
             <connections>
+                <outlet property="_googleDriveBtn" destination="3oI-7b-8fS" id="WQr-pU-TuR"/>
                 <outlet property="_signInBtn2" destination="H8K-vo-TwS" id="H46-TB-ulG"/>
                 <outlet property="credentialsButton" destination="80" id="83"/>
                 <outlet property="disconnectButton" destination="65" id="71"/>
@@ -68,7 +69,7 @@
                         </connections>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="65">
-                        <rect key="frame" x="186" y="160" width="97" height="35"/>
+                        <rect key="frame" x="159" y="160" width="97" height="35"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                         <state key="normal" title="Disconnect">
@@ -94,11 +95,19 @@
                         </accessibility>
                     </view>
                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H8K-vo-TwS">
-                        <rect key="frame" x="295" y="100" width="84" height="39"/>
+                        <rect key="frame" x="280" y="100" width="89" height="39"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <state key="normal" title="Login"/>
                         <connections>
                             <action selector="loginGoogle2:" destination="-1" eventType="touchUpInside" id="pED-Rp-m5c"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3oI-7b-8fS">
+                        <rect key="frame" x="280" y="160" width="89" height="35"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Google Drive"/>
+                        <connections>
+                            <action selector="googleDriveClicked:" destination="-1" eventType="touchUpInside" id="CST-6L-wfa"/>
                         </connections>
                     </button>
                 </subviews>

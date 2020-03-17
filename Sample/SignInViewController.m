@@ -24,6 +24,7 @@
 #import "AuthInspectorViewController.h"
 #import "DataPickerState.h"
 #import "DataPickerViewController.h"
+#import "GoogleDriveController.h"
 
 typedef void(^AlertViewActionBlock)(void);
 
@@ -75,7 +76,9 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   NSDictionary *_drilldownCellState;
     
     __weak IBOutlet UIButton *_signInBtn2;
+    __weak IBOutlet UIButton *_googleDriveBtn;
     GIDSignIn *_signIn;
+    GTLRDriveService *_googleDriveService;
 }
 
 #pragma mark - View lifecycle
@@ -123,10 +126,17 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   _signIn.presentingViewController = self;
   _signIn.scopes = @[ kGTLRAuthScopeDriveFile, kGTLRAuthScopeDrive, ];
   [_signIn restorePreviousSignIn];
+    
+    _googleDriveService = [[GTLRDriveService alloc] init];
 }
 
 - (IBAction) loginGoogle2:(id)sender {
     [_signIn signIn];
+}
+
+- (IBAction) googleDriveClicked:(id)sender {
+    GoogleDriveController *ctrl = [[GoogleDriveController alloc] init];
+    [self.navigationController pushViewController:ctrl animated:YES];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil
@@ -249,6 +259,8 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
     _signInAuthStatus.text = @"Status: Not authenticated";
   }
 
+    _googleDriveService.authorizer = googleUser.authentication.fetcherAuthorizer;
+    
   [self refreshUserInfo];
 }
 
@@ -305,6 +317,7 @@ static NSString *const kCredentialsButtonAccessibilityIdentifier = @"Credentials
   self.credentialsButton.hidden = !authenticated;
     
     _signInBtn2.enabled = !authenticated;
+    _googleDriveBtn.enabled = authenticated;
 
   if (authenticated) {
     self.signInButton.alpha = 0.5;
