@@ -50,10 +50,20 @@ typedef void (^completionCallback)(id object, NSError *error);
              progress:(void(^)(CGFloat progress))progress
            completion:(completionCallback)completion;
 
-- (void) uploadFileLocalPath:(NSString *)localPath
-                  remotePath:(NSString *)remotePath
-                    progress:(void(^)(CGFloat progress))progress
-                  completion:(completionCallback)completion;
+- (void) downloadFileCore:(GTLRDrive_File *)file
+                localPath:(NSString *)localPath
+                 progress:(void (^)(CGFloat))progress
+               completion:(completionCallback)completion;
+
+- (void) uploadFile:(NSString *)remotePath
+          localPath:(NSString *)localPath
+           progress:(void(^)(CGFloat progress))progress
+         completion:(completionCallback)completion;
+
+- (void) uploadFileCore:(GTLRDrive_File *)file
+              localPath:(NSString *)localPath
+               progress:(void (^)(CGFloat))progress
+             completion:(completionCallback)completion;
 
 - (void) deleteFile:(NSString *)fileID completion:(completionCallback)completion;
 

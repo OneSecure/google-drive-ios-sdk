@@ -280,7 +280,7 @@
             }
             [self _internalDownload:findFile localPath:localPath progress:progress completion:completion];
         } else {
-            [self _doDownloadFileOperation:findFile localPath:localPath progress:progress completion:completion];
+            [self downloadFileCore:findFile localPath:localPath progress:progress completion:completion];
         }
     }];
 }
@@ -288,10 +288,10 @@
 //
 // https://github.com/google/google-api-objectivec-client-for-rest/blob/master/Examples/DriveSample/DriveSampleWindowController.m#L241
 //
-- (void) _doDownloadFileOperation:(GTLRDrive_File *)file
-                        localPath:(NSString *)localPath
-                         progress:(void (^)(CGFloat))progress
-                       completion:(completionCallback)completion
+- (void) downloadFileCore:(GTLRDrive_File *)file
+                localPath:(NSString *)localPath
+                 progress:(void (^)(CGFloat))progress
+               completion:(completionCallback)completion
 {
     GTLRDriveQuery_FilesGet *query = [GTLRDriveQuery_FilesGet queryForMediaWithFileId:file.identifier];
 #if 0
@@ -323,10 +323,10 @@
 #endif
 }
 
-- (void) uploadFileLocalPath:(NSString *)localPath
-                  remotePath:(NSString *)remotePath
-                    progress:(void(^)(CGFloat progress))progress
-                  completion:(completionCallback)completion
+- (void) uploadFile:(NSString *)remotePath
+          localPath:(NSString *)localPath
+           progress:(void(^)(CGFloat progress))progress
+         completion:(completionCallback)completion
 {
     _filePathComponents = [[NSMutableArray alloc] initWithObjects:kGoogleDriveRootFolder, nil];
     [_filePathComponents addObjectsFromArray:[remotePath pathComponents]];
@@ -402,15 +402,15 @@
                 findFile.name = nextPath;
                 findFile.originalFilename = nextPath;
             }
-            [self _doUploadFileOperation:findFile localPath:localPath progress:progress completion:completion];
+            [self uploadFileCore:findFile localPath:localPath progress:progress completion:completion];
         }
     }];
 }
 
-- (void) _doUploadFileOperation:(GTLRDrive_File *)file
-                      localPath:(NSString *)localPath
-                       progress:(void (^)(CGFloat))progress
-                     completion:(completionCallback)completion
+- (void) uploadFileCore:(GTLRDrive_File *)file
+              localPath:(NSString *)localPath
+               progress:(void (^)(CGFloat))progress
+             completion:(completionCallback)completion
 {
     dispatch_block_t block = ^{
     NSData *fileContent =[NSData dataWithContentsOfFile:localPath];
