@@ -102,6 +102,8 @@
 
 - (void) signOutGoogleDrive {
     [_signIn signOut];
+    _currentUser = nil;
+    _driveService.authorizer = nil;
 }
 
 - (void) disconnectGoogleDrive:(completionCallback)completion {
@@ -128,13 +130,11 @@
 }
 
 - (void) signIn:(GIDSignIn *)signIn didDisconnectWithUser:(GIDGoogleUser *)user withError:(NSError *)error {
-    _currentUser = nil;
-    _driveService.authorizer = nil;
+    [self signOutGoogleDrive];
     if (_disconnectCompletion) {
         _disconnectCompletion(user, error);
         _disconnectCompletion = nil;
     }
-    [_signIn signOut];
 }
 
 #pragma mark -
